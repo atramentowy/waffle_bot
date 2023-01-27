@@ -1,21 +1,21 @@
 # Waffle-bot [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-Simple disord bot that can play music from youtube and soundcloud without queue
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
+Simple discord bot that can play music from youtube and soundcloud
 
 ## Commands
   
-- play <url>
-- stop
-- pause
-- resume
-- join
-- leave
-- ping
-- hello
+- join        (joins voice channel)
+- leave       (leaves voice channel)
+- add <url>   (adds url to queue)
+- rm <index>  (removes url from queue by its index)
+- clear       (clears queue)
+- queue       (shows queued url's)
+- play <url>  (plays music from url)
+- skip        (skips played music)
+- pause       (pauses player)
+- resume      (resumes player)
+- ping        (checks ping)
+- hello       (hello command)
 
 ## Setup
 ### Windows:
@@ -56,6 +56,6 @@ Enter the bot token in the config.json
   python main.py
 ```
 
-## Authors
+## Author
 
 - [@restricted](https://github.com/restricted7331)
