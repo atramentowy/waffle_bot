@@ -24,7 +24,7 @@ Simple discord bot that can play music from youtube and soundcloud
 Clone the project and go to the project directory
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/restricted7331/Waffle-bot/
   cd Waffle-bot
 ```
 
