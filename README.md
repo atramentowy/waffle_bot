@@ -1,6 +1,6 @@
 # Waffle-bot [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-Simple discord bot that can play music from youtube and soundcloud
+Simple discord bot that can play music from youtube, soundcloud and twitch streams
 
 ## Commands
   
@@ -31,7 +31,7 @@ Clone the project and go to the project directory
 Install youtube_dl and discord.py 
 
 ```bash
-  pip install youtube_dl
+  pip install youtube_dlp
   pip install discord.py==1.7.3
 ```
 

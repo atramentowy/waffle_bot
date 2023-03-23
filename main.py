@@ -7,7 +7,7 @@ import json
 
 import discord
 from discord.ext import commands
-import youtube_dl
+import yt_dlp
 
 with open("config.json") as f:
     config = json.load(f)
@@ -15,27 +15,20 @@ with open("config.json") as f:
 bot = commands.Bot(command_prefix='?')
 
 # Suppress noise about console usage from errors
-youtube_dl.utils.bug_reports_message = lambda: ''
+yt_dlp.utils.bug_reports_message = lambda: ''
 
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'restrictfilenames': True,
-    'noplaylist': False,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
+ytdl_opts = {
+    'format': 'm4a/bestaudio/best',
+    'outtmpl': '%(id)s',        
+    'noplaylist' : True,
+    
+    'postprocessors': [{  # Extract audio using ffmpeg
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'm4a',
+    }]
 }
 
-ffmpeg_options = {
-    'options': '-vn'
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+yt_dlp = yt_dlp.YoutubeDL(ytdl_opts)
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -49,14 +42,14 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+        data = await loop.run_in_executor(None, lambda: yt_dlp.extract_info(url, download=not stream))
 
         if 'entries' in data:
             # take first item from a playlist
             data = data['entries'][0]
 
-        filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+        filename = data['url'] if stream else yt_dlp.prepare_filename(data)
+        return cls(discord.FFmpegPCMAudio(filename, before_options="-loglevel fatal -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"), data=data)
 
 
 @bot.event
@@ -112,10 +105,8 @@ class Music(commands.Cog):
             await ctx.send('Queue is empty')
             return
 
-        num = 0
-        for i in queue:
-            await ctx.send('``'+str(num)+'`` ``'+i+'``')
-            num += 1
+        for count, value in enumerate(queue):
+            await ctx.send('``'+str(count)+'`` ``'+value+'``')
 
     @commands.command(aliases=['p'])
     async def play(self, ctx, *, url: str = None):
@@ -186,9 +177,9 @@ class Other(commands.Cog):
         await ctx.send(f'**Pong!** Latency: {round(bot.latency * 1000)}ms')
 
     @commands.command(aliases=['hi'])
-    async def hello(self, ctx):
-        responses = ['hi', 'hello']
-        await ctx.send(random.choice(responses))
+    async def coinflip(self, ctx):
+        coin = ['heads', 'tails']
+        await ctx.send(random.choice(coin))
 
 
 bot.add_cog(Other(bot))
