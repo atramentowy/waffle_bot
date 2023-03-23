@@ -1,5 +1,3 @@
-# Created by restricted7331
-
 import asyncio
 import random
 import time
@@ -12,7 +10,7 @@ import yt_dlp
 with open("config.json") as f:
     config = json.load(f)
 
-bot = commands.Bot(command_prefix='?')
+bot = commands.Bot(command_prefix='?', intents=discord.Intents.all())
 
 # Suppress noise about console usage from errors
 yt_dlp.utils.bug_reports_message = lambda: ''
@@ -77,7 +75,8 @@ class Music(commands.Cog):
     @commands.command()
     async def leave(self, ctx):
         if (ctx.voice_client):
-            await ctx.guild.voice_client.disconnect()
+            # await ctx.guild.voice_client.disconnect()
+            await ctx.voice_client.disconnect()
             await ctx.send('Left voice channel')
         else:
             await ctx.send("I'm not in a voice channel")
@@ -110,41 +109,20 @@ class Music(commands.Cog):
 
     @commands.command(aliases=['p'])
     async def play(self, ctx, *, url: str = None):
-        global queue
-
         if ctx.author.voice is None or ctx.author.voice.channel is None:
             return await ctx.send('You need to be in a voice channel to use this command!')
-
+            
         voice_channel = ctx.author.voice.channel
         if ctx.voice_client is None:
-            vc = await voice_channel.connect()
-        else:
-            await ctx.voice_client.move_to(voice_channel)
+            try:
+                await voice_channel.connect()
+            except Exception as e:
+                print(repr(e))
 
-        async def start_player(ctx):
-            if len(queue) == 0:
-                return
-
-            async with ctx.typing():
-                player = await YTDLSource.from_url(queue.pop(0), loop=self.bot.loop, stream = True)
-                ctx.voice_client.play(player, after = lambda e: asyncio.run_coroutine_threadsafe(start_player(ctx), self.bot.loop))
-            await ctx.send('***Now playing:*** {}'.format(player.title))
-
-
-        if ctx.voice_client.is_playing():
-            queue.append(url)
-            await ctx.send('Queued')
-            return
-        else:
-            if(url == None and len(queue) == 0):
-                await ctx.send('No url and nothing queued')
-                return
-            elif(url == None):
-                await ctx.send('Playing from queue')
-                await start_player(ctx)
-            else:
-                queue.append(url)
-                await start_player(ctx)
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream = True)
+            ctx.voice_client.play(player, after = lambda e: asyncio.run_coroutine_threadsafe(start_player(ctx), self.bot.loop))
+        await ctx.send('***Now playing:*** {}'.format(player.title))
 
     @commands.command(aliases=['s'])
     async def skip(self, ctx):
@@ -182,6 +160,10 @@ class Other(commands.Cog):
         await ctx.send(random.choice(coin))
 
 
-bot.add_cog(Other(bot))
-bot.add_cog(Music(bot))
-bot.run(config['token'])
+async def main():
+    await bot.add_cog(Other(bot))
+    await bot.add_cog(Music(bot))
+    async with bot:
+        await bot.start(config["token"])
+
+asyncio.run(main())
