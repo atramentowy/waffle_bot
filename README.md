@@ -29,10 +29,10 @@ Clone the project and go to the project directory
   cd Waffle-bot
 ```
 
-Install youtube_dl and discord.py 
+Install yt_dl and discord.py 
 
 ```bash
-  pip install youtube_dlp
+  pip install yt_dlp
   pip install discord.py
   pip install discord.py[voice]
 ```
