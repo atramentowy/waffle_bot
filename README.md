@@ -1,7 +1,6 @@
 # Waffle-bot
-<a target="_blank" href="https://icons8.com/icon/xnXs0CGoBO17/waffle">Waffle</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
-Simple discord bot that can play music from youtube and other sites
+Simple python bot that can play music on voice channels from youtube and other websites
 
 ## Commands
   
@@ -11,15 +10,18 @@ Simple discord bot that can play music from youtube and other sites
 - rm <index>  (removes url from queue by its index)
 - clear       (clears queue)
 - queue       (shows queued urls)
-- play <url>  (plays music from url)
-- skip        (skips played music)
+- play <url>  (plays song from url)
+- skip        (skips currently played song)
 - pause       (pauses player)
 - resume      (resumes player)
+- search      (searches for song title)
 - ping        (checks ping)
-- hello       (hello command)
+- coinflip    (flips a coin)
+
+Some commands can be used in shorter form (?p ?play are the same thing)
 
 ## Setup
-### Windows:
+### Windows
 #### Python 3.8 or higher is required
 
 Clone the project and go to the project directory
@@ -29,11 +31,11 @@ Clone the project and go to the project directory
   cd Waffle-bot
 ```
 
-Install yt_dl and discord.py 
+Install yt_dl and discord.py 1.7.3
 
 ```bash
-  pip install yt_dlp
-  pip install discord.py
+  pip install yt_dlp 
+  pip install discord.py == 1.7.3
   pip install discord.py[voice]
 ```
 
@@ -50,10 +52,18 @@ Install ffmpeg
   ffmpeg -version
 ```
 
-Enter the bot token in the config.json
+Create config.json file first variable should be prefix, second token
+```
+{
+  "prefix": "?",
+  "token": ""
+}
+```
 
-## Run
+### Run
 
 ```bash
   python main.py
 ```
+
+<a target="_blank" href="https://icons8.com/icon/xnXs0CGoBO17/waffle">Waffle</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>

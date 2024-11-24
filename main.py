@@ -71,6 +71,7 @@ class Ytdlp(discord.PCMVolumeTransformer):
             print(f"Error during extraction: {e}")
             return None
 
+
 @bot.event
 async def on_ready():
     print('Bot is ready!')
@@ -173,7 +174,7 @@ class Music(commands.Cog):
             if ctx.voice_client.is_playing():
                 embed1 = discord.Embed(title="Queue", color=discord.Color.from_rgb(255, 94, 51))
                 embed1.add_field(
-                    name=current_title+" - "+current_author, value='``♫``  '+current_song, inline=False
+                    name=current_author + " - " + current_title, value='``♫``  ' + current_song, inline=False
                 )
                 return await ctx.send(embed=embed1)
             else:
@@ -184,7 +185,7 @@ class Music(commands.Cog):
 
         embed2 = discord.Embed(title="Queue", color=discord.Color.from_rgb(255, 94, 51))
         embed2.add_field(
-            name=current_title+" - "+current_author, value='``♫``  '+current_song, inline=False
+            name=current_author + " - " + current_title, value='``♫``  ' + current_song, inline=False
         )
         for count, value in enumerate(queue):
             # await ctx.send('``' + str(count) + '`` ``' + value + '``')
@@ -193,7 +194,8 @@ class Music(commands.Cog):
                 title = data.get("title")
                 author = data.get("uploader")
 
-                embed2.add_field(name=author+" - "+title, value='``'+str(count)+'`` '+value+' ', inline=False)
+                embed2.add_field(name=author + " - " + title, value='``' + str(count) + '`` ' + value + ' ',
+                                 inline=False)
             except Exception as e:
                 await ctx.send("An error occurred while fetching the video title.")
                 print(f"Error: {e}")
@@ -254,45 +256,12 @@ class Music(commands.Cog):
             embed2.add_field(name='', value='***Now playing:*** {}'.format(player.title))
             await ctx.send(embed=embed2)
 
-        # async def search_for_video(_ctx, _url: str):
+        # async def search_url(_ctx, _url: str):
         #     async with ctx.typing():
         #         data = await Ytdlp.search_from_url(url)
         #         title = data.get('title')
         #         # video_url = data.get('webpage_url')
         #         await ctx.send(f"Title: {title} Url: {url}")
-
-        # async def search_url(_ctx, _url):  # test search
-        #     # Create an instance of yt-dlp.YoutubeDL with the options
-        #     with yt_dlp.YoutubeDL(ytdl_opts) as ydl:
-        #         try:
-        #             # Extract information from the search URL
-        #             info = ydl.extract_info(search_url, download=False)
-        #
-        #             if 'entries' in info:
-        #                 # Get the first result from the search
-        #                 video = info['entries'][0]
-        #                 title = video.get('title')
-        #                 # url = video.get('webpage_url')
-        #                 return await ctx.send(f"title {title} url: {_url}")
-        #             else:
-        #                 return None
-        #         except Exception as e2:
-        #             print(f"Error during search: {e2}")
-        #             return None
-        #
-        #     # async with ctx.typing():
-        #     #     search_results = yt_dlp.extract_info(f'ytsearch: {url}', download=False)['entries'][:3]
-        #     #     if search_results:
-        #     #         for i, result in enumerate(search_results):
-        #     #             await ctx.send(f"Found: {result['title']}")
-        #     #             # await ctx.send(f" URL: {result['url']}")
-        #     #             return result['url']
-        #     #     else:
-        #     #         # await ctx.send("Can't find any search result for this query")
-        #     #         embed2 = discord.Embed(color=discord.Color.from_rgb(255, 94, 51))
-        #     #         embed2.add_field(name='', value="Can't find any search result for this query")
-        #     #         await ctx.send(embed=embed2)
-        #     #         return False
 
         if ctx.voice_client.is_playing():
             queue.append(url)
@@ -366,12 +335,12 @@ class Other(commands.Cog):
         embed1.add_field(name='', value=random.choice(coin))
         await ctx.send(embed=embed1)
 
-
 async def main():
     await bot.add_cog(Music(bot))
     await bot.add_cog(Other(bot))
 
     async with bot:
         await bot.start(config["token"])
+
 
 asyncio.run(main())
